@@ -24,9 +24,17 @@
 #           http://www.python.org/doc/2.5.1/lib/module-time.html
 #       Default is "%a %d %b, %Y".
 #
+#    --header-time-format "<format>"
+#       Specifies the time format used below the pages, using a format string 
+#       as specified in the documentation for python's time.strftime() 
+#       function:
+#           http://www.python.org/doc/2.5.1/lib/module-time.html
+#       Default is "%H%M".
+#
 #    --time-format "<format>"
-#       Specifies the date format, using a format string as specified
-#       in the documentation for python's time.strftime() function:
+#       Specifies the time format used in the header, using a format string 
+#       as specified in the documentation for python's time.strftime() 
+#       function:
 #           http://www.python.org/doc/2.5.1/lib/module-time.html
 #       Default is "%H%M".
 #
@@ -35,6 +43,10 @@
 #        If the amount of data points for a day exceeds this, 
 #        extras are put on a new row.
 #        Default is 24.
+#
+#    --deviations
+#        If specified, the output includes the actual time that the chart 
+#        most closely matches.  Only valid with HTML output.
 #
 # Usage Example:
 #
@@ -49,20 +61,25 @@ import time
 import getopt
 
 html = False
+show_deviations = False
 max_cols_per_row = 24
 date_format = '%a %d %b, %Y'
-time_format = '%H%M'
+time_format = header_time_format = '%H%M'
 
-optlist, args = getopt.getopt(sys.argv[1:], '', ['html','date-format=','time-format=','columns='])
+optlist, args = getopt.getopt(sys.argv[1:], '', ['html','date-format=','header-time-format=','time-format=','columns=','deviations'])
 for o,a in optlist:
 	if o == '--html':
 		html = True
 	elif o == '--date-format':
 		date_format = a
+	elif o == '--header-time-format':
+		header_time_format = a
 	elif o == '--time-format':
 		time_format = a
 	elif o == '--columns':
 		max_cols_per_row = int(a)
+	elif o == '--deviations':
+		show_deviations = True
 		
 found_first_day = False
 got_headers = False
@@ -81,12 +98,14 @@ while line:
 		if found_first_day or timestr == '00:00':
 			datestr = parts[0]
 			page = parts[2]
+			deviation = float(parts[3])
+			tm = time.strptime(datestr + ' ' + timestr, '%Y-%m-%d %H:%M')
 			if found_first_day and timestr == '00:00':
 				prevdatefmt = time.strftime(date_format, time.strptime(prevdatestr, '%Y-%m-%d'))
 				if not got_headers:
 					got_headers = True
 					if html:
-						print '<table class="ca_table"><tr class="ca_tr ca_tr_header1"><td class="ca_td ca_td_headerdate1"></td>'
+						print '<table class="ca_table" cellspacing="0" cellpadding="0" border="0"><tr class="ca_tr ca_tr_header1"><td class="ca_td ca_td_headerdate1"></td>'
 					else:
 						sys.stdout.write(' ' * len(prevdatefmt) + ' | ')
 					colidx = 0
@@ -129,11 +148,14 @@ while line:
 						else:
 							sys.stdout.write('\n' + ' ' * len(prevdatefmt) + ' |')
 						colidx = 0
-					if len(value) > 0:
+					if len(value['page']) > 0:
 						if html:
-							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '">%02d</td>' % int(value)
+							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '">%02d' % int(value['page'])
+							if show_deviations:								
+								print '<br /><span class="ca_span_deviation">' + time.strftime(time_format, value['time']) + '</span>' 
+							print '</td>'
 						else:
-							sys.stdout.write((' %02d' % int(value)) + (' ' * (len(headers[colidx]) - 2)))
+							sys.stdout.write((' %02d' % int(value['page'])) + (' ' * (len(headers[colidx]) - 2)))
 					else:
 						if html:
 							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '"></td>'
@@ -150,12 +172,12 @@ while line:
 					oddeven = 'odd'
 				values = []
 			if not got_headers and not time_indices.has_key(timestr):
-				headers.append(time.strftime(time_format, time.strptime(timestr, '%H:%M')))
+				headers.append(time.strftime(header_time_format, tm))
 				time_indices[timestr] = len(headers) - 1
 			time_index = time_indices[timestr]
 			while len(values) <= time_index:
-				values.append('')
-			values[time_index] = page
+				values.append({'page': ''})
+			values[time_index] = {'page':page, 'time':time.localtime(time.mktime((tm[0],tm[1],tm[2],tm[3],tm[4],tm[5]+int(deviation*60.0),tm[6],tm[7],tm[8]))) }
 			found_first_day = True
 			prevdatestr = datestr		
 	line = sys.stdin.readline()
