@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
 #
 # Calculates current atlas chart numbers for the time period of the input.
 # Expects CSV output from xtide for the "Point Atkinson, British Columbia"

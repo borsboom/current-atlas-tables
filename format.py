@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
 #
 # Formats the output of calculate.py to a table in text or HTML format.
 #

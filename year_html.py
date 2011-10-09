@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
 #
 # Produce formatted HTML for the tables for the year specified on the 
 # command-line.
