@@ -86,6 +86,9 @@ got_headers = False
 headers = []
 time_indices = {}
 values = []
+dst_start_tm = None
+dst_end_tm = None
+table_start_tm = None
 
 oddeven = "odd"
 
@@ -100,6 +103,8 @@ while line:
 			page = parts[2]
 			deviation = float(parts[3])
 			tm = time.strptime(datestr + ' ' + timestr, '%Y-%m-%d %H:%M')
+			if table_start_tm == None:
+				table_start_tm = tm
 			if found_first_day and timestr == '00:00':
 				prevdatefmt = time.strftime(date_format, time.strptime(prevdatestr, '%Y-%m-%d'))
 				if not got_headers:
@@ -157,6 +162,7 @@ while line:
 						else:
 							sys.stdout.write((' %02d' % int(value['page'])) + (' ' * (len(headers[colidx]) - 2)))
 					else:
+						dst_start_tm = time.strptime(prevdatestr, '%Y-%m-%d')
 						if html:
 							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '"></td>'
 						else:
@@ -177,10 +183,18 @@ while line:
 			time_index = time_indices[timestr]
 			while len(values) <= time_index:
 				values.append({'page': ''})
+			if len(values[time_index]['page']) > 0:
+				dst_end_tm = tm
 			values[time_index] = {'page':page, 'time':time.localtime(time.mktime((tm[0],tm[1],tm[2],tm[3],tm[4],tm[5]+int(deviation*60.0),tm[6],tm[7],tm[8]))) }
 			found_first_day = True
 			prevdatestr = datestr		
 	line = sys.stdin.readline()
 	
 if html:
+	if dst_start_tm != None:
+		print '<tr><td colspan="25" class="ca_td_dst">times after 0200 on ' + time.strftime('%A, %B %d', dst_start_tm) + ' are adjusted for daylight savings</td></tr>'
+	elif dst_end_tm != None:
+		print '<tr><td colspan="25" class="ca_td_dst">times until 0200 on ' + time.strftime('%A, %B %d', dst_end_tm) + ' are adjusted for daylight savings</td></tr>'
+	elif table_start_tm[1] >= 4 and table_start_tm[1] <= 10:
+		print '<tr><td colspan="25" class="ca_td_dst">times are adjusted for daylight savings</td></tr>'		
 	print '</table>'

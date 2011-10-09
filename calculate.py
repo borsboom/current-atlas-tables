@@ -26,7 +26,7 @@
 #
 # Usage example:
 #
-#     tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00' 
+#     tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00' \
 #         -e '2009-04-01 23:59' | ./calculate.py --time-interval 30
 #
 
