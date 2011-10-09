@@ -1,11 +1,11 @@
 FAQ for Current Atlas Table scripts
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009 Emanuel Borsboom.  See COPYING.txt for license.
+Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
 
-Q: Why is there a blank space at 2AM on the second Sunday of March?  
+Q: Why is there a blank space at 2 AM on the second Sunday of March?  
 A: Because of the change to daylight saving time (PDT).  The hour between
-   2AM and 3AM is skipped.
+   2 AM and 3 AM is skipped.
 
 Q: So what about the switch back to standard time (PST) in November?  
 A: Because an hour is repeated, the "first" one is left out of the table.

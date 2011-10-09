@@ -1,8 +1,8 @@
 README for Current Atlas Table scripts
 -----------------------------------------------------------------------------
-Web site: http://www.epiphyte.ca/code/currents.html
+Web site: http://www.epiphyte.ca/proj/currents
 
-Copyright (c) 2009 Emanuel Borsboom.  See COPYING.txt for license.
+Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
 
 These scripts are used to produce tables of chart numbers for a given 
 date/time, to make the current atlas easier to use.  The results are for use
@@ -40,3 +40,4 @@ format.py
 	
 year_html.py
 	Generates nicely formatted HTML for a whole year.
+
