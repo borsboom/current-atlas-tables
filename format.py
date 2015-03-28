@@ -61,15 +61,18 @@ import time
 import getopt
 
 html = False
+csv = False
 show_deviations = False
 max_cols_per_row = 24
 date_format = '%a %d %b, %Y'
 time_format = header_time_format = '%H%M'
 
-optlist, args = getopt.getopt(sys.argv[1:], '', ['html','date-format=','header-time-format=','time-format=','columns=','deviations'])
+optlist, args = getopt.getopt(sys.argv[1:], '', ['html','csv','date-format=','header-time-format=','time-format=','columns=','deviations'])
 for o,a in optlist:
 	if o == '--html':
 		html = True
+	elif o == '--csv':
+		csv = True
 	elif o == '--date-format':
 		date_format = a
 	elif o == '--header-time-format':
@@ -111,6 +114,8 @@ while line:
 					got_headers = True
 					if html:
 						print '<table class="ca_table" cellspacing="0" cellpadding="0" border="0"><tr class="ca_tr ca_tr_header1"><td class="ca_td ca_td_headerdate1"></td>'
+					elif csv:
+						sys.stdout.write('Date')
 					else:
 						sys.stdout.write(' ' * len(prevdatefmt) + ' | ')
 					colidx = 0
@@ -120,16 +125,22 @@ while line:
 							rowidx += 1
 							if html:
 								print '</tr><tr class="ca_tr ca_tr_header' + str(rowidx+1) + '"><td class="ca_td ca_td_headerdate' + str(rowidx+1) + '"></td>'
+							elif csv:
+								print ','
 							else:
 								sys.stdout.write('\n' + ' ' * len(prevdatefmt) + ' | ')
 							colidx = 0
 						if html:
 							print '<td class="ca_td ca_td_headertime' + str(rowidx+1) + '">' + header + '</td>'
+						elif csv:
+							sys.stdout.write(',%s' % header)
 						else:
 							sys.stdout.write('%s ' % header)
 						colidx += 1
 					if html:
 						print '</tr>'
+					elif csv:
+						sys.stdout.write('\n')
 					else:
 						sys.stdout.write('\n' + '-' * len(prevdatefmt) + '-+')
 						colidx = 0
@@ -141,6 +152,8 @@ while line:
 						sys.stdout.write('\n')
 				if html:
 					print '<tr class="ca_tr ca_tr_' + oddeven + '1"><td class="ca_td ca_td_' + oddeven + 'date1">' + prevdatefmt + '</td>'
+				elif csv:
+					sys.stdout.write('%s' % prevdatefmt)
 				else:
 					sys.stdout.write('%s |' % prevdatefmt)
 				colidx = 0
@@ -150,6 +163,8 @@ while line:
 						rowidx += 1
 						if html:
 							print '</tr><tr class="ca_tr ca_tr_' + oddeven + str(rowidx+1) + '"><td class="ca_td ca_td_' + oddeven + 'date' + str(rowidx+1) + '"></td>'
+						elif csv:
+							sys.stdout.write('\n,')
 						else:
 							sys.stdout.write('\n' + ' ' * len(prevdatefmt) + ' |')
 						colidx = 0
@@ -159,17 +174,23 @@ while line:
 							if show_deviations:								
 								print '<br /><span class="ca_span_deviation">' + time.strftime(time_format, value['time']) + '</span>' 
 							print '</td>'
+						elif csv:
+							sys.stdout.write(',%d' % int(value['page']))
 						else:
 							sys.stdout.write((' %02d' % int(value['page'])) + (' ' * (len(headers[colidx]) - 2)))
 					else:
 						dst_start_tm = time.strptime(prevdatestr, '%Y-%m-%d')
 						if html:
 							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '"></td>'
+						if csv:
+							sys.stdout.write(',')
 						else:
 							sys.stdout.write(' ' + (' ' * len(headers[colidx])))
 					colidx += 1
 				if html:
 					print '</tr>'
+				elif csv:
+					sys.stdout.write('\n')
 				else:
 					sys.stdout.write('\n')
 				if oddeven == 'odd': 
