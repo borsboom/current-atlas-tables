@@ -182,7 +182,7 @@ while line:
 						dst_start_tm = time.strptime(prevdatestr, '%Y-%m-%d')
 						if html:
 							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '"></td>'
-						if csv:
+						elif csv:
 							sys.stdout.write(',')
 						else:
 							sys.stdout.write(' ' + (' ' * len(headers[colidx])))
