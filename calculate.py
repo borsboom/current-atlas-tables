@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2019 Emanuel Borsboom.  See COPYING.txt for license.
 #
 # Calculates current atlas chart numbers for the time period of the input.
 # Expects CSV output from xtide for the "Point Atkinson, British Columbia"
@@ -75,7 +75,7 @@ while line:
 		curtm = time.mktime(time.strptime(datestr + ' ' + timestr, "%Y-%m-%d %I:%M %p %Z"))
 		curht = float(heightstr[0:-2])
 		if prevtm:
-			htdiff = (curht - prevht)	
+			htdiff = (curht - prevht)
 			if htdiff >= 2.4:
 				info = flood_30_info
 			elif htdiff >= 1.2:
@@ -102,7 +102,7 @@ while line:
 					# than the nearest point on the current cycle, so skip to next
 					# cycle.
 					offset_next_outtm = -output_time_increment
-					break				
+					break
 				if page == prevpage:
 					# If we have a page repeat, bias slightly toward the
 					# next page, but make sure we don't repeat the bias
@@ -113,10 +113,10 @@ while line:
 					pagetmdev = calc_pagetmdev(pagepos,cycles,pages,curtm,prevtm,0.1)
 				else:
 					prevpage = page
-				print (time.strftime("%Y-%m-%d,%H:%M", time.localtime(outtm)) + 
-				       ',' + 
-				       str(page) + 
-				       ',' + 
+				print (time.strftime("%Y-%m-%d,%H:%M", time.localtime(outtm)) +
+				       ',' +
+				       str(page) +
+				       ',' +
 				       '%+f' % (pagetmdev / 60))
 				outtm += output_time_increment
 		prevtm = curtm

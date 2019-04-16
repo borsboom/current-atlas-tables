@@ -1,8 +1,8 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2019 Emanuel Borsboom.  See COPYING.txt for license.
 #
-# Produce formatted HTML for the tables for the year specified on the 
+# Produce formatted HTML for the tables for the year specified on the
 # command-line.
 #
 # Usage example:
@@ -49,7 +49,7 @@ print '</head><body>'
 print '<h1 style="text-align:center">Current Atlas Lookup Tables</h1>'
 print '<h2 style="text-align:center">Juan de Fuca Strait to Strait of Georgia</h2>'
 print '<h1 style="text-align:center">' + str(year) + '</h1>'
-print '<p style="text-align:center" class="onlineonly"><a href="http://www.epiphyte.ca/proj/currents">Other Years and Printable PDFs</a></p>'
+print '<p style="text-align:center" class="onlineonly"><a href="https://borsboom.io/current-atlas-tables/">Other Years and Printable PDFs</a></p>'
 print '''
 <p style="text-align: center"><em>For use with:</em>
 <br /><img src="current_atlas.jpg" width="431" height="591" style="border: 1px solid black"/>
@@ -61,13 +61,13 @@ print '''
 -->
 </p>
 <p>To find the chart number for a date and time,
-first find the table for the required date, then find the row for the required day, 
+first find the table for the required date, then find the row for the required day,
 then read across to the
 column for required hour, and finally turn to the chart number in the <em>Current Atlas</em>.
 The small time below the chart number indicates the actual time
 that the chart most closely matches.  Times <strong>are</strong> adjusted for daylight savings (PDT, 0200 second Sunday in March through 0200 first Sunday in November).</p>
 <p><strong>These tables are for non-commercial use only!</strong></p>
-<p>For tables for other years<span class="onlineonly"> and printable PDFs</span>, visit <a href="http://www.epiphyte.ca/proj/currents">http://www.epiphyte.ca/proj/currents</a>.
+<p>For tables for other years<span class="onlineonly"> and printable PDFs</span>, visit <a href="https://borsboom.io/current-atlas-tables/">borsboom.io/current-atlas-tables</a>.
 <div class="onlineonly"><h4>Contents</h4><ul>
 '''
 for month in range(1,13):
@@ -83,16 +83,17 @@ print '''
 <p style="page-break-after:always">
 &nbsp;<br />
 <em>Produced by <strong>Emanuel Borsboom</strong>
-<br />Site 11 Comp 9, Mayne Island, B.C.  V0N 2J0
-<br /><a href="http://www.epiphyte.ca/">www.epiphyte.ca</a></em>
+<br />Mayne Island, B.C.
+<br />web: <a href="https://borsboom.io/">borsboom.io</a></em>
 </p>
+<p class="printonly" style="page-break-after:always;text-align:center">(this page intentionally left blank)</p>
 '''
 
 for month in range(1,13):
 	print ('<h3 style="margin-bottom:4pt;page-break-before:always"><a name="' + ('%02d' % month) + '" />' + 
     	   time.strftime('%B, %Y', time.localtime(time.mktime((year,month,1,0,0,0,0,0,0)))) +
-	       '<span class="printonly" style="float:right">Current Atlas Lookup Tables: Juan de Fuca Strait to Strait of Georgia</span>' +
-	       '</h4><center>') 
+	       '<span class="printonly" style="float:right;font-size:smaller">Current Atlas Lookup Tables: Juan de Fuca Strait to Strait of Georgia</span>' +
+	       '</h3><center>&nbsp;<br />')
 	sys.stdout.flush()
 	posix.system('tide -l "Point Atkinson, British Columbia" -f c -b "' +
 			     time.strftime('%Y-%m-%d %H:%M', time.localtime(time.mktime((year,month,0,12,0,0,0,0,0)))) +
@@ -100,5 +101,5 @@ for month in range(1,13):
 			     time.strftime('%Y-%m-%d %H:%M', time.localtime(time.mktime((year,month+1,1,12,0,0,0,0,0)))) +
 			     '" | ./calculate.py --time-interval 60 | ./format.py --html --header-time-format "%H" --time-format "%H%M" --date-format \'%d<br /><span class="ca_span_dayofweek">%a</span>\' --deviations')
 	print '</center>'
-			
+
 print '</body></html>'

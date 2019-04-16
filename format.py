@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright (c) 2009-2011 Emanuel Borsboom.  See COPYING.txt for license.
+# Copyright (c) 2009-2019 Emanuel Borsboom.  See COPYING.txt for license.
 #
 # Formats the output of calculate.py to a table in text or HTML format.
 #
@@ -25,33 +25,33 @@
 #       Default is "%a %d %b, %Y".
 #
 #    --header-time-format "<format>"
-#       Specifies the time format used below the pages, using a format string 
-#       as specified in the documentation for python's time.strftime() 
+#       Specifies the time format used below the pages, using a format string
+#       as specified in the documentation for python's time.strftime()
 #       function:
 #           http://www.python.org/doc/2.5.1/lib/module-time.html
 #       Default is "%H%M".
 #
 #    --time-format "<format>"
-#       Specifies the time format used in the header, using a format string 
-#       as specified in the documentation for python's time.strftime() 
+#       Specifies the time format used in the header, using a format string
+#       as specified in the documentation for python's time.strftime()
 #       function:
 #           http://www.python.org/doc/2.5.1/lib/module-time.html
 #       Default is "%H%M".
 #
 #    --columns <n>
 #        Specifies the maximum number of columns in the output table.
-#        If the amount of data points for a day exceeds this, 
+#        If the amount of data points for a day exceeds this,
 #        extras are put on a new row.
 #        Default is 24.
 #
 #    --deviations
-#        If specified, the output includes the actual time that the chart 
+#        If specified, the output includes the actual time that the chart
 #        most closely matches.  Only valid with HTML output.
 #
 # Usage Example:
 #
-#   tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00' 
-#       -e '2009-04-01 23:59' | ./calculate.py --time-interval 30 | 
+#   tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00'
+#       -e '2009-04-01 23:59' | ./calculate.py --time-interval 30 |
 #       ./format.py  --date-format "%a %d" --time-format '%H:%M' --columns 12
 #
 
@@ -83,7 +83,7 @@ for o,a in optlist:
 		max_cols_per_row = int(a)
 	elif o == '--deviations':
 		show_deviations = True
-		
+
 found_first_day = False
 got_headers = False
 headers = []
@@ -171,8 +171,8 @@ while line:
 					if len(value['page']) > 0:
 						if html:
 							print '<td class="ca_td ca_td_' + oddeven + 'page' + str(rowidx+1) + '">%02d' % int(value['page'])
-							if show_deviations:								
-								print '<br /><span class="ca_span_deviation">' + time.strftime(time_format, value['time']) + '</span>' 
+							if show_deviations:
+								print '<br /><span class="ca_span_deviation">' + time.strftime(time_format, value['time']) + '</span>'
 							print '</td>'
 						elif csv:
 							sys.stdout.write(',%d' % int(value['page']))
@@ -193,9 +193,9 @@ while line:
 					sys.stdout.write('\n')
 				else:
 					sys.stdout.write('\n')
-				if oddeven == 'odd': 
+				if oddeven == 'odd':
 					oddeven = 'even'
-				else: 
+				else:
 					oddeven = 'odd'
 				values = []
 			if not got_headers and not time_indices.has_key(timestr):
@@ -208,14 +208,14 @@ while line:
 				dst_end_tm = tm
 			values[time_index] = {'page':page, 'time':time.localtime(time.mktime((tm[0],tm[1],tm[2],tm[3],tm[4],tm[5]+int(deviation*60.0),tm[6],tm[7],tm[8]))) }
 			found_first_day = True
-			prevdatestr = datestr		
+			prevdatestr = datestr
 	line = sys.stdin.readline()
-	
+
 if html:
 	if dst_start_tm != None:
 		print '<tr><td colspan="25" class="ca_td_dst">times after 0200 on ' + time.strftime('%A, %B %d', dst_start_tm) + ' are adjusted for daylight savings</td></tr>'
 	elif dst_end_tm != None:
 		print '<tr><td colspan="25" class="ca_td_dst">times until 0200 on ' + time.strftime('%A, %B %d', dst_end_tm) + ' are adjusted for daylight savings</td></tr>'
 	elif table_start_tm[1] >= 4 and table_start_tm[1] <= 10:
-		print '<tr><td colspan="25" class="ca_td_dst">times are adjusted for daylight savings</td></tr>'		
+		print '<tr><td colspan="25" class="ca_td_dst">times are adjusted for daylight savings</td></tr>'
 	print '</table>'
