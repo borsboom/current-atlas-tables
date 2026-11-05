@@ -13,6 +13,7 @@
 import sys
 import time
 import posix
+import daylight
 
 year = int(sys.argv[1])
 
@@ -65,7 +66,7 @@ first find the table for the required date, then find the row for the required d
 then read across to the
 column for required hour, and finally turn to the chart number in the <em>Current Atlas</em>.
 The small time below the chart number indicates the actual time
-that the chart most closely matches.  Times <strong>are</strong> adjusted for daylight savings (PDT, 0200 second Sunday in March through 0200 first Sunday in November).</p>
+that the chart most closely matches.  ''' + daylight.describe_year(year) + '''</p>
 <p><strong>These tables are for non-commercial use only!</strong></p>
 <p>For tables for other years<span class="onlineonly"> and printable PDFs</span>, visit <a href="https://borsboom.io/current-atlas-tables/">borsboom.io/current-atlas-tables</a>.
 <div class="onlineonly"><h4>Contents</h4><ul>
@@ -95,10 +96,10 @@ for month in range(1,13):
 	       '<span class="printonly" style="float:right;font-size:smaller">Current Atlas Lookup Tables: Juan de Fuca Strait to Strait of Georgia</span>' +
 	       '</h3><center>&nbsp;<br />')
 	sys.stdout.flush()
-	posix.system('tide -l "Point Atkinson, British Columbia" -f c -b "' +
-			     time.strftime('%Y-%m-%d %H:%M', time.localtime(time.mktime((year,month,0,12,0,0,0,0,0)))) +
+	posix.system('tide -l "Point Atkinson, British Columbia" -f c -z -b "' +
+			     time.strftime('%Y-%m-%d %H:%M', time.gmtime(time.mktime((year,month,0,12,0,0,0,0,-1)))) +
 			     '" -e "' +
-			     time.strftime('%Y-%m-%d %H:%M', time.localtime(time.mktime((year,month+1,1,12,0,0,0,0,0)))) +
+			     time.strftime('%Y-%m-%d %H:%M', time.gmtime(time.mktime((year,month+1,1,12,0,0,0,0,-1)))) +
 			     '" | ./calculate.py --time-interval 60 | ./format.py --html --header-time-format "%H" --time-format "%H%M" --date-format \'%d<br /><span class="ca_span_dayofweek">%a</span>\' --deviations')
 	print '</center>'
 

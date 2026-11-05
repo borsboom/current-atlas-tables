@@ -13,3 +13,11 @@ A: Because an hour is repeated, the "first" one is left out of the table.
    you'll just have to interpolate :)
    Note that the the CSV output from calculate.py will include this time
    period twice.
+
+Q: Why is there no switch back to standard time in November 2026 and later?
+A: British Columbia's 2026-03-08 spring forward was its last clock change:
+   the province stays on daylight time (UTC-7) all year from then on.  The
+   tables follow the system's time zone rules, so they need tzdata 2026b or
+   later (the Dockerfile installs current rules).  Tables made with older
+   rules show November 2026 onward, and January to mid-March 2027 onward, in
+   PST (UTC-8): an hour behind B.C. clocks.

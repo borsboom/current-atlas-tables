@@ -25,7 +25,9 @@ output of these scripts is under the same restriction.
 
 These scripts have only been tested on a system that is set to the Pacific
 time zone.  If your system is configured with a different time zone, the
-results may be unpredictable.
+results may be unpredictable.  Times follow the system's time zone rules, so
+for British Columbia (TZ=America/Vancouver) use tzdata 2026b or later, which
+has B.C.'s move to permanent daylight time (UTC-7) after 2026-03-08.
 
 There is a Dockerfile for an environment with the correct configuration and
 tools installed.  The image is also uploaded to Docker Hub at
