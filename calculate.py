@@ -4,7 +4,10 @@
 #
 # Calculates current atlas chart numbers for the time period of the input.
 # Expects CSV output from xtide for the "Point Atkinson, British Columbia"
-# location on standard input.
+# location on standard input, preferably in UTC (xtide's -z option): UTC
+# times are unambiguous and don't depend on time zone abbreviations, which
+# have changed (e.g. B.C.'s permanent UTC-7 is labelled MST from November
+# 2026).
 #
 # Produces CSV output of this format on standard output, where 'N' is
 # the chart number for the date/time, and D is the deviation in minutes
@@ -12,7 +15,8 @@
 #
 #    YYYY-MM-DD,HH:MM,N,D
 #
-# The script corrects for changes to/from daylight saving time (PDT).
+# Output times are in the system time zone, so the script corrects for
+# changes to/from daylight saving time (PDT) as the time zone rules say.
 #
 # Note that this script is only tested on a system that is set to the Pacific
 # time zone.  If your system is configured with a different time zone,
@@ -26,8 +30,8 @@
 #
 # Usage example:
 #
-#     tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00' \
-#         -e '2009-04-01 23:59' | ./calculate.py --time-interval 30
+#     tide -l "Point Atkinson, British Columbia" -f c -z -b '2009-02-28 20:00' \
+#         -e '2009-04-02 07:59' | ./calculate.py --time-interval 30
 #
 
 import sys
@@ -35,6 +39,7 @@ import string
 import time
 import math
 import getopt
+import calendar
 
 flood_30_info = { 'pages' : [1,2,3,4,5,6,7,8],
                   'cycles': 1.0259 }
@@ -50,6 +55,13 @@ ebb_12_info   = { 'pages' : [37,38,39,40,41,42,43]																,
 				  'cycles': 1.1756 }
 
 output_time_increment = 60 * 60 # 1 hour
+
+def parse_xtide_time(datestr, timestr):
+	clockstr, zonestr = timestr.rsplit(' ', 1)
+	if zonestr in ('UTC', 'GMT', 'UT', 'Z'):
+		# float, like time.mktime(), so the arithmetic below stays true division
+		return float(calendar.timegm(time.strptime(datestr + " " + clockstr, "%Y-%m-%d %I:%M %p")))
+	return time.mktime(time.strptime(datestr + ' ' + timestr, "%Y-%m-%d %I:%M %p %Z"))
 
 def calc_pagetmdev(pagepos,cycles,pages,curtm,prevtm,pagebias):
 	return (round(pagepos) - (pagepos-pagebias)) * cycles / (len(pages)-1) * (curtm - prevtm)
@@ -72,7 +84,7 @@ while line:
 	if len(heightstr)>0:
 		datestr = parts[1]
 		timestr = parts[2]
-		curtm = time.mktime(time.strptime(datestr + ' ' + timestr, "%Y-%m-%d %I:%M %p %Z"))
+		curtm = parse_xtide_time(datestr, timestr)
 		curht = float(heightstr[0:-2])
 		if prevtm:
 			htdiff = (curht - prevht)

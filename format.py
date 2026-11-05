@@ -50,8 +50,8 @@
 #
 # Usage Example:
 #
-#   tide -l "Point Atkinson, British Columbia" -f c -b '2009-02-28 12:00'
-#       -e '2009-04-01 23:59' | ./calculate.py --time-interval 30 |
+#   tide -l "Point Atkinson, British Columbia" -f c -z -b '2009-02-28 20:00'
+#       -e '2009-04-02 07:59' | ./calculate.py --time-interval 30 |
 #       ./format.py  --date-format "%a %d" --time-format '%H:%M' --columns 12
 #
 
@@ -59,6 +59,7 @@ import sys
 import string
 import time
 import getopt
+import daylight
 
 html = False
 csv = False
@@ -216,6 +217,6 @@ if html:
 		print '<tr><td colspan="25" class="ca_td_dst">times after 0200 on ' + time.strftime('%A, %B %d', dst_start_tm) + ' are adjusted for daylight savings</td></tr>'
 	elif dst_end_tm != None:
 		print '<tr><td colspan="25" class="ca_td_dst">times until 0200 on ' + time.strftime('%A, %B %d', dst_end_tm) + ' are adjusted for daylight savings</td></tr>'
-	elif table_start_tm[1] >= 4 and table_start_tm[1] <= 10:
+	elif daylight.is_daylight(time.mktime(table_start_tm)):
 		print '<tr><td colspan="25" class="ca_td_dst">times are adjusted for daylight savings</td></tr>'
 	print '</table>'
